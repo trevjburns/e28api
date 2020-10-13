@@ -1,0 +1,48 @@
+{
+    "product": {
+        "name": {
+            "type": "string",
+            "validators": [
+                "required"
+            ]
+        },
+        "slug": {
+            "type": "string",
+            "validators": [
+                "required",
+                "min:10"
+            ]
+        },
+        "description": {
+            "type": "text",
+            "validators": [
+                "required"
+            ]
+        },
+        "price": {
+            "type": "integer",
+            "validators": [
+                "required",
+                "numeric"
+            ]
+        },
+        "available": {
+            "type": "integer",
+            "validators": [
+                "required"
+            ]
+        },
+        "weight": {
+            "type": "integer",
+            "validators": [
+                "required"
+            ]
+        },
+        "perishable": {
+            "type": "boolean",
+            "validators": [
+                "required"
+            ]
+        }
+    }
+}
