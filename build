@@ -22,8 +22,21 @@ dump "Detected environment: $environment"
 #
 # Update code
 #
-dump "Syncing code with github.com/susanBuck/e28-api"
-git pull
+dump "Updating e28-api-core"
+
+# Make core directory if it doesn't exist
+mkdir -p core
+
+# All other commands should be run in core/
+cd core
+
+# Update e28-api-core if it already exists (`app` directory present)
+if [ -d "app" ]; then
+    git pull
+# Clone e28-api-core if it does not yet exist
+else
+    git clone git@github.com:susanBuck/e28-api-core.git .
+fi
 
 
 #
@@ -42,9 +55,6 @@ if [ $environment == 'production' ]; then
         sudo apt-get update
         sudo apt-get install php7.4-mbstring zip unzip php7.4-xml php-sqlite3
 
-        # echo "Installing Composer"
-        # apt install composer
-
         echo "Enabling modrewrite"
         # Laravel requires Apache's `mod_rewrite` for URL routing, so we enable it:
         sudo a2enmod rewrite
@@ -53,9 +63,6 @@ if [ $environment == 'production' ]; then
         service apache2 restart
     fi
 fi
-
-
-cd "core"
 
 
 #
@@ -107,4 +114,24 @@ dump "Build API"
 php artisan e28-api:build
 
 
-dump "Setup complete"
+dump "Setup complete!"
+
+if [ $environment == 'production' ]; then
+    url="e28-api.yourdomain.com"
+else
+    url="e28-api.loc"
+fi
+
+echo "To access your API, set up the following Virtual Host and visit http://$url"
+
+echo "
+<VirtualHost *:80>
+    ServerName e28-api.loc
+    DocumentRoot $(pwd)/public/
+    <Directory $(pwd)/public/>
+        AllowOverride All
+        Options -Indexes
+        Require all granted
+    </Directory>
+</VirtualHost>
+"
