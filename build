@@ -83,14 +83,17 @@ php artisan migrate --force
 
 
 #
-# Laravel stufff
+# Laravel initial setup
 #
-dump "Creating environment file (.env)"
-cp .env.example .env
+if [ ! -f ".env" ]; then
+    dump "Laravel initial setup"
 
-
-dump "Generating app key"
-php artisan key:generate
+    echo "Creating environment file (.env)"
+    cp .env.example .env
+    
+    echo "Generating app key"
+    php artisan key:generate
+fi
 
 
 #
@@ -122,11 +125,11 @@ else
     url="e28-api.loc"
 fi
 
-echo "To access your API, set up the following Virtual Host and visit http://$url"
+echo "To access your API on $environment, use the following Virtual Host:"
 
 echo "
 <VirtualHost *:80>
-    ServerName e28-api.loc
+    ServerName $url
     DocumentRoot $(pwd)/public/
     <Directory $(pwd)/public/>
         AllowOverride All

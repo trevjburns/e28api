@@ -1,0 +1,18 @@
+{
+    "favorite": {
+        "product_id": {
+            "type": "integer",
+            "validators": [
+                "required",
+                "numeric"
+            ]
+        },
+        "user_id": {
+            "type": "string",
+            "validators": [
+                "required",
+                "numeric"
+            ]
+        }
+    }
+}
