@@ -10,7 +10,8 @@
             "type": "string",
             "validators": [
                 "required",
-                "min:10"
+                "min:3",
+                "unique:products,slug"
             ]
         },
         "description": {
@@ -42,6 +43,22 @@
             "type": "boolean",
             "validators": [
                 "required"
+            ]
+        }
+    },
+    "favorite": {
+        "product_id": {
+            "type": "integer",
+            "validators": [
+                "required",
+                "numeric"
+            ]
+        },
+        "user_id": {
+            "type": "string",
+            "validators": [
+                "required",
+                "numeric"
             ]
         }
     }

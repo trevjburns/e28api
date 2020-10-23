@@ -76,11 +76,8 @@ if [ $environment == 'production' ]; then
     chown -R www-data /var/www/html/e28-api/core/database
 fi
 
-
 # Do initial migration (so sessions and other fundamental tables exist, allowing artisan scripts to run w/o error)
-# Note: Build API command does a migration:fresh to run all migrations that it adds
 php artisan migrate --force
-
 
 #
 # Laravel initial setup
@@ -110,23 +107,13 @@ if [ $environment == 'production' ]; then
 fi
 
 
-#
-# Build API
-#
-dump "Build API"
-php artisan e28-api:build
-
-
-dump "Setup complete!"
-
 if [ $environment == 'production' ]; then
     url="e28-api.yourdomain.com"
 else
     url="e28-api.loc"
 fi
 
-echo "To access your API on $environment, use the following Virtual Host:"
-
+dump "Expected Virtual Host:"
 echo "
 <VirtualHost *:80>
     ServerName $url
@@ -138,3 +125,12 @@ echo "
     </Directory>
 </VirtualHost>
 "
+
+
+#
+# Build API
+#
+dump "Build API"
+php artisan e28-api:build
+
+
