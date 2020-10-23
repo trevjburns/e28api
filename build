@@ -1,7 +1,6 @@
-# Change this if you're not using DigitalOcean and
-# your server has a different document root
-serverDocRoot="/var/www/html/"
-
+# Update the following if you're not using DigitalOcean
+apiRoot="/var/www/html/e28/e28-api"
+user='www-data'
 
 
 #
@@ -104,14 +103,14 @@ fi
 #
 if [ $environment == 'production' ]; then
     dump "Setting permissions"
-    chown -R www-data "${serverDocRoot}e28-api/core/storage"
-    chown -R www-data "${serverDocRoot}e28-api/core/bootstrap/cache"
-    chown -R www-data "${serverDocRoot}e28-api/core/database/migrations/"
-    chown -R www-data "${serverDocRoot}e28-api/core/app/Models/GeneratedModels/"
-    chown -R www-data "${serverDocRoot}e28-api/core/app/Http/Controllers/GeneratedControllers/"
-    chown -R www-data "${serverDocRoot}e28-api/core/app/Http/Requests/GeneratedRequests/"
-    chown -R www-data "${serverDocRoot}e28-api/core/database/factories/GeneratedModels"
-    chown -R www-data "${serverDocRoot}e28-api/core/routes"
+    chown -R ${user} "${apiRoot}/core/storage"
+    chown -R ${user} "${apiRoot}/core/bootstrap/cache"
+    chown -R ${user} "${apiRoot}/core/database/migrations/"
+    chown -R ${user} "${apiRoot}/core/app/Models/GeneratedModels/"
+    chown -R ${user} "${apiRoot}/core/app/Http/Controllers/GeneratedControllers/"
+    chown -R ${user} "${apiRoot}/core/app/Http/Requests/GeneratedRequests/"
+    chown -R ${user} "${apiRoot}/core/database/factories/GeneratedModels"
+    chown -R ${user} "${apiRoot}/core/routes"
 fi
 
 
@@ -140,5 +139,3 @@ echo "
 #
 dump "Build API"
 php artisan e28-api:build
-
-
