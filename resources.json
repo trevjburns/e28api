@@ -3,21 +3,26 @@
         "name": {
             "type": "string",
             "validators": [
-                "required"
+                "required",
+                "min:3",
+                "max:100"
             ]
         },
-        "slug": {
+        "sku": {
             "type": "string",
             "validators": [
                 "required",
                 "min:3",
-                "unique:products,slug"
+                "max:100",
+                "unique:sku",
+                "alpha_dash"
             ]
         },
         "description": {
             "type": "text",
             "validators": [
-                "required"
+                "required",
+                "min:100"
             ]
         },
         "price": {
@@ -30,13 +35,15 @@
         "available": {
             "type": "integer",
             "validators": [
-                "required"
+                "required",
+                "numeric"
             ]
         },
         "weight": {
             "type": "integer",
             "validators": [
-                "required"
+                "required",
+                "numeric"
             ]
         },
         "perishable": {
