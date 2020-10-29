@@ -14,7 +14,7 @@
                 "required",
                 "min:3",
                 "max:100",
-                "unique:sku",
+                "unique",
                 "alpha_dash"
             ]
         },
