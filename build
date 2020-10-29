@@ -1,9 +1,8 @@
 # Update the following if you're not using DigitalOcean
-#apiRoot="/var/www/html/e28/e28-api"
-#user='www-data'
+apiRoot="/var/www/html/e28/e28-api"
+user='www-data'
 
-apiRoot="/home/forge/e28-api.hesweb.dev"
-user='forge'
+
 
 #
 # Output
