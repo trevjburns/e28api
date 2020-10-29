@@ -140,4 +140,4 @@ echo "
 # Build API
 #
 dump "Build API"
-php artisan e28-api:build
+php artisan e28-api:setup
