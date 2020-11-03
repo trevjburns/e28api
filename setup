@@ -33,6 +33,7 @@ apiDir="$(realpath "${apiDir}")/" # Resolve its full path if need be
 coreDir=$apiDir"core/"
 publicDir=$coreDir"public/"
 
+# Determine what system we're on (local or production) based on whether the `productionApacheUser` exists 
 if [ -f "/etc/passwd" ]; then
     productionApacheUserExists=$(grep -c "^$productionApacheUser:" /etc/passwd)
 else 
@@ -42,7 +43,7 @@ fi
 # PRODUCTION
 if [ "$productionApacheUserExists" = "1" ]; then
     server="production"
-    phpExecutable="/usr/bin/php"
+    phpExecutable=$(which php)
 # LOCAL
 else
     server="local"
@@ -63,10 +64,9 @@ else
     # Other
     else 
         system='other'
-        phpExecutable="php"
+        phpExecutable=$(which php)
     fi
 fi
-
 
 
 echo "* Setup script version: $ver"
@@ -133,6 +133,7 @@ fi
 #
 dump "Setting up database"
 touch database/database.sqlite
+echo "Created /core/database/database.sqlite"
 
 # Do initial migration (so sessions and other fundamental tables exist, allowing artisan scripts to run w/o error)
 $phpExecutable artisan migrate --force --quiet
@@ -156,6 +157,8 @@ if [ ! -f ".env" ]; then
         chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
         chown -R ${productionApacheUser} "${coreDir}routes"
     elif [ $system != 'windows' ]; then
+        # Note: File mode changes aren't necessary on Windows because XAMPP is running with the necessary
+        # permissions to write to the following directories. 
         echo "Local: Setting write permissions on directories that Apache needs write access to"
         chmod -R 777 "${coreDir}database"
         chmod -R 777 "${coreDir}storage"
