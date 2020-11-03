@@ -46,6 +46,7 @@ else
     server="local"
     # Windows
     if [ -d "c:\xampp\php" ]; then
+        system='windows'
         phpExecutable="c:\xampp\php\php.exe"
         # Replace the staring "/c/" with "c:/"
         apiDir=${apiDir/\/c\//c:\/}
@@ -55,9 +56,11 @@ else
         publicDir=$coreDir"public\\"
     # Mac
     elif [ -d "/Applications/XAMPP/xamppfiles/bin" ]; then
+        system='mac'
         phpExecutable="/Applications/XAMPP/xamppfiles/bin/php"
     # Other
     else 
+        system='other'
         phpExecutable="php"
     fi
 fi
@@ -90,7 +93,7 @@ cd core
 
 # Update e28-api-core if it already exists (`app` directory present)
 if [ -d "app" ]; then
-    git pull
+   git pull
 # Clone e28-api-core if it does not yet exist
 else
     git clone git@github.com:susanBuck/e28-api-core.git .
@@ -130,7 +133,7 @@ dump "Setting up database"
 touch database/database.sqlite
 
 # Do initial migration (so sessions and other fundamental tables exist, allowing artisan scripts to run w/o error)
-$phpExecutable artisan migrate --force
+$phpExecutable artisan migrate --force --quiet
 
 #
 # Laravel initial setup
@@ -138,44 +141,38 @@ $phpExecutable artisan migrate --force
 if [ ! -f ".env" ]; then
     dump "Laravel initial setup"
 
+    if [ $server == 'production' ]; then
+        echo "Production: Setting $productionApacheUser as owner of directories that Apache needs write access to"
+        chown -R ${productionApacheUser} "${coreDir}database"
+        chown -R ${productionApacheUser} "${coreDir}storage"
+        chown -R ${productionApacheUser} "${coreDir}bootstrap/cache"
+        chown -R ${productionApacheUser} "${coreDir}database/migrations/"
+        chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
+        chown -R ${productionApacheUser} "${coreDir}app/Models/GeneratedModels/"
+        chown -R ${productionApacheUser} "${coreDir}app/Http/Controllers/GeneratedControllers/"
+        chown -R ${productionApacheUser} "${coreDir}app/Http/Requests/GeneratedRequests/"
+        chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
+        chown -R ${productionApacheUser} "${coreDir}routes"
+    elif [ $system != 'windows' ]; then
+        echo "Local: Setting write permissions on directories that Apache needs write access to"
+        chmod -R 777 "${coreDir}database"
+        chmod -R 777 "${coreDir}storage"
+        chmod -R 777 "${coreDir}bootstrap/cache"
+        chmod -R 777 "${coreDir}database/migrations/"
+        chmod -R 777 "${coreDir}database/factories/GeneratedModels"
+        chmod -R 777 "${coreDir}app/Models/GeneratedModels/"
+        chmod -R 777 "${coreDir}app/Http/Controllers/GeneratedControllers/"
+        chmod -R 777 "${coreDir}app/Http/Requests/GeneratedRequests/"
+        chmod -R 777 "${coreDir}database/factories/GeneratedModels"
+        chmod -R 777 "${coreDir}routes"
+    fi
+
     echo "Creating environment file (.env)"
     cp .env.example .env
     
     echo "Generating app key"
     $phpExecutable artisan key:generate
 fi
-
-
-#
-# Permissions
-#
-dump "Setting permissions"
-if [ $server == 'production' ]; then
-    echo "Production: Setting $productionApacheUser as owner of directories that Apache needs write access to"
-    sudo chown -R ${productionApacheUser} "${coreDir}database"
-    sudo chown -R ${productionApacheUser} "${coreDir}storage"
-    sudo chown -R ${productionApacheUser} "${coreDir}bootstrap/cache"
-    sudo chown -R ${productionApacheUser} "${coreDir}database/migrations/"
-    sudo chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
-    sudo chown -R ${productionApacheUser} "${coreDir}app/Models/GeneratedModels/"
-    sudo chown -R ${productionApacheUser} "${coreDir}app/Http/Controllers/GeneratedControllers/"
-    sudo chown -R ${productionApacheUser} "${coreDir}app/Http/Requests/GeneratedRequests/"
-    sudo chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
-    sudo chown -R ${productionApacheUser} "${coreDir}routes"
-else
-    echo "Local: Setting write permissions on directories that Apache needs write access to"
-    chmod -R 777 "${coreDir}database"
-    chmod -R 777 "${coreDir}storage"
-    chmod -R 777 "${coreDir}bootstrap/cache"
-    chmod -R 777 "${coreDir}database/migrations/"
-    chmod -R 777 "${coreDir}database/factories/GeneratedModels"
-    chmod -R 777 "${coreDir}app/Models/GeneratedModels/"
-    chmod -R 777 "${coreDir}app/Http/Controllers/GeneratedControllers/"
-    chmod -R 777 "${coreDir}app/Http/Requests/GeneratedRequests/"
-    chmod -R 777 "${coreDir}database/factories/GeneratedModels"
-    chmod -R 777 "${coreDir}routes"
-fi
-
 
 
 #
