@@ -5,7 +5,7 @@
 # $ ps -ef | grep apache
 # From the results, look at the left-most column corresponding to the Apache server
 # Change the following variable to that user
-productionApacheUser="forge"
+productionApacheUser="www-data"
 
 
 
