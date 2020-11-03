@@ -1,16 +1,21 @@
-# Update the following variables as needed if you're not using DigitalOcean
-productionDocRoot="/var/www/html/e28/e28-api"
-productionUser='www-data'
+# To set permissions for the API we need to know what user 
+# the server is running Apache under.
+# On DigitalOcean, this user is `www-data`.
+# If you're using a different server, run the following command to find out your Apache user:
+# $ ps -ef | grep apache
+# From the results, look at the left-most column corresponding to the Apache server
+# Change the following variable to that user
+productionApacheUser="forge"
 
 
 
 #
 # Output
 #
-function dump {
+dump () {
     echo ""
     echo "===> $1"
-} 
+}
 
 
 
@@ -19,22 +24,35 @@ function dump {
 #
 dump "Detecting system"
 
-curDir=$(pwd)
-publicDir=$curDir/public/
+# Location of e28-api; retrieved by getting the path of this script (setup) that is running
+apiDir="$(dirname "${BASH_SOURCE[0]}")" # Get the directory name
+apiDir="$(realpath "${apiDir}")/" # Resolve its full path if need be
 
-if [ -d $productionDocRoot ]; then
+coreDir=$apiDir"core/"
+publicDir=$coreDir"public/"
+
+if [ -f "/etc/passwd" ]; then
+    productionApacheUserExists=$(grep -c "^$productionApacheUser:" /etc/passwd)
+else 
+    productionApacheUserExists=0
+fi
+
+# PRODUCTION
+if [ "$productionApacheUserExists" = "1" ]; then
     server="production"
     phpExecutable="/usr/bin/php"
+# LOCAL
 else
     server="local"
     # Windows
     if [ -d "c:\xampp\php" ]; then
         phpExecutable="c:\xampp\php\php.exe"
         # Replace the staring "/c/" with "c:/"
-        curDir=${curDir/\/c\//c:\/}
+        apiDir=${apiDir/\/c\//c:\/}
         # Replace all forward slashes with backwards slashes
-        curDir=${curDir//\//\\}
-        publicDir="$curDir\\public\\"
+        apiDir=${apiDir//\//\\}
+        coreDir=$apiDir"core\\"
+        publicDir=$coreDir"public\\"
     # Mac
     elif [ -d "/Applications/XAMPP/xamppfiles/bin" ]; then
         phpExecutable="/Applications/XAMPP/xamppfiles/bin/php"
@@ -44,10 +62,18 @@ else
     fi
 fi
 
-echo "Server: $server"
-echo "PHP Executable: $phpExecutable"
-echo "Current working directory: $curDir"
-echo "Public directory: $publicDir"
+
+
+
+echo "* Server: $server"
+if [ $server == 'production' ]; then
+    echo "* Apache user: $productionApacheUser"
+fi
+
+echo "* PHP executable: $phpExecutable"
+echo "* API directory: $apiDir"
+echo "* Core directory: $coreDir"
+echo "* Public directory: $publicDir"
 
 
 
@@ -102,11 +128,6 @@ fi
 #
 dump "Setting up database"
 touch database/database.sqlite
-if [ $server == 'production' ]; then
-    # the PDO SQLite driver requires that if you are going to do a write operation (INSERT, UPDATE, DELETE, DROP, etc.),
-    # then the folder the database resides in must have write permissions, as well as the actual database file
-    chown -R ${user} "${apiRoot}/core/database"
-fi
 
 # Do initial migration (so sessions and other fundamental tables exist, allowing artisan scripts to run w/o error)
 $phpExecutable artisan migrate --force
@@ -121,27 +142,45 @@ if [ ! -f ".env" ]; then
     cp .env.example .env
     
     echo "Generating app key"
-    php artisan key:generate
+    $phpExecutable artisan key:generate
 fi
 
 
 #
 # Permissions
 #
+dump "Setting permissions"
 if [ $server == 'production' ]; then
-    dump "Setting permissions"
-    chown -R ${productionUser} "${productionDocRoot}/core/storage"
-    chown -R ${productionUser} "${productionDocRoot}/core/bootstrap/cache"
-    chown -R ${productionUser} "${productionDocRoot}/core/database/migrations/"
-    chown -R ${productionUser} "${productionDocRoot}/core/database/factories/GeneratedModels"
-    chown -R ${productionUser} "${productionDocRoot}/core/app/Models/GeneratedModels/"
-    chown -R ${productionUser} "${productionDocRoot}/core/app/Http/Controllers/GeneratedControllers/"
-    chown -R ${productionUser} "${productionDocRoot}/core/app/Http/Requests/GeneratedRequests/"
-    chown -R ${productionUser} "${productionDocRoot}/core/database/factories/GeneratedModels"
-    chown -R ${productionUser} "${productionDocRoot}/core/routes"
+    echo "Production: Setting $productionApacheUser as owner of directories that Apache needs write access to"
+    sudo chown -R ${productionApacheUser} "${coreDir}database"
+    sudo chown -R ${productionApacheUser} "${coreDir}storage"
+    sudo chown -R ${productionApacheUser} "${coreDir}bootstrap/cache"
+    sudo chown -R ${productionApacheUser} "${coreDir}database/migrations/"
+    sudo chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
+    sudo chown -R ${productionApacheUser} "${coreDir}app/Models/GeneratedModels/"
+    sudo chown -R ${productionApacheUser} "${coreDir}app/Http/Controllers/GeneratedControllers/"
+    sudo chown -R ${productionApacheUser} "${coreDir}app/Http/Requests/GeneratedRequests/"
+    sudo chown -R ${productionApacheUser} "${coreDir}database/factories/GeneratedModels"
+    sudo chown -R ${productionApacheUser} "${coreDir}routes"
+else
+    echo "Local: Setting write permissions on directories that Apache needs write access to"
+    chmod -R 777 "${coreDir}database"
+    chmod -R 777 "${coreDir}storage"
+    chmod -R 777 "${coreDir}bootstrap/cache"
+    chmod -R 777 "${coreDir}database/migrations/"
+    chmod -R 777 "${coreDir}database/factories/GeneratedModels"
+    chmod -R 777 "${coreDir}app/Models/GeneratedModels/"
+    chmod -R 777 "${coreDir}app/Http/Controllers/GeneratedControllers/"
+    chmod -R 777 "${coreDir}app/Http/Requests/GeneratedRequests/"
+    chmod -R 777 "${coreDir}database/factories/GeneratedModels"
+    chmod -R 777 "${coreDir}routes"
 fi
 
 
+
+#
+# Virtual Host
+#
 if [ $server == 'production' ]; then
     url="e28-api.yourdomain.com"
 else
