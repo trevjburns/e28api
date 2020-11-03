@@ -1,3 +1,5 @@
+ver=1.0.0
+
 # To set permissions for the API we need to know what user 
 # the server is running Apache under.
 # On DigitalOcean, this user is `www-data`.
@@ -67,7 +69,7 @@ fi
 
 
 
-
+echo "* Setup script version: $ver"
 echo "* Server: $server"
 if [ $server == 'production' ]; then
     echo "* Apache user: $productionApacheUser"
