@@ -1,6 +1,6 @@
-# Update the following if you're not using DigitalOcean
-apiRoot="/var/www/html/e28/e28-api"
-user='www-data'
+# Update the following variables as needed if you're not using DigitalOcean
+productionDocRoot="/var/www/html/e28/e28-api"
+productionUser='www-data'
 
 
 
@@ -13,20 +13,46 @@ function dump {
 } 
 
 
+
 #
-# Detect environment
+# Detect system
 #
-if [ -d $apiRoot ]; then
-    environment="production"
+dump "Detecting system"
+
+curDir=$(pwd)
+publicDir=$curDir/public/
+
+if [ -d $productionDocRoot ]; then
+    server="production"
+    phpExecutable="/usr/bin/php"
 else
-    environment="local"
+    server="local"
+    # Windows
+    if [ -d "c:\xampp\php" ]; then
+        phpExecutable="c:\xampp\php\php.exe"
+        # Replace the staring "/c/" with "c:/"
+        curDir=${curDir/\/c\//c:\/}
+        # Replace all forward slashes with backwards slashes
+        curDir=${curDir//\//\\}
+        publicDir="$curDir\\public\\"
+    # Mac
+    elif [ -d "/Applications/XAMPP/xamppfiles/bin" ]; then
+        phpExecutable="/Applications/XAMPP/xamppfiles/bin/php"
+    # Other
+    else 
+        phpExecutable="php"
+    fi
 fi
 
-dump "Detected environment: $environment"
+echo "Server: $server"
+echo "PHP Executable: $phpExecutable"
+echo "Current working directory: $curDir"
+echo "Public directory: $publicDir"
+
 
 
 #
-# Update code
+# Update core
 #
 dump "Updating e28-api-core"
 
@@ -48,7 +74,7 @@ fi
 #
 # Packages
 #
-if [ $environment == 'production' ]; then
+if [ $server == 'production' ]; then
 
     # If we have sqlite3, we can assume server prep has already been completed - skip
     if php -m | grep sqlite3 >/dev/null; then
@@ -76,14 +102,14 @@ fi
 #
 dump "Setting up database"
 touch database/database.sqlite
-if [ $environment == 'production' ]; then
+if [ $server == 'production' ]; then
     # the PDO SQLite driver requires that if you are going to do a write operation (INSERT, UPDATE, DELETE, DROP, etc.),
     # then the folder the database resides in must have write permissions, as well as the actual database file
     chown -R ${user} "${apiRoot}/core/database"
 fi
 
 # Do initial migration (so sessions and other fundamental tables exist, allowing artisan scripts to run w/o error)
-php artisan migrate --force
+$phpExecutable artisan migrate --force
 
 #
 # Laravel initial setup
@@ -102,21 +128,21 @@ fi
 #
 # Permissions
 #
-if [ $environment == 'production' ]; then
+if [ $server == 'production' ]; then
     dump "Setting permissions"
-    chown -R ${user} "${apiRoot}/core/storage"
-    chown -R ${user} "${apiRoot}/core/bootstrap/cache"
-    chown -R ${user} "${apiRoot}/core/database/migrations/"
-    chown -R ${user} "${apiRoot}/core/database/factories/GeneratedModels"
-    chown -R ${user} "${apiRoot}/core/app/Models/GeneratedModels/"
-    chown -R ${user} "${apiRoot}/core/app/Http/Controllers/GeneratedControllers/"
-    chown -R ${user} "${apiRoot}/core/app/Http/Requests/GeneratedRequests/"
-    chown -R ${user} "${apiRoot}/core/database/factories/GeneratedModels"
-    chown -R ${user} "${apiRoot}/core/routes"
+    chown -R ${productionUser} "${productionDocRoot}/core/storage"
+    chown -R ${productionUser} "${productionDocRoot}/core/bootstrap/cache"
+    chown -R ${productionUser} "${productionDocRoot}/core/database/migrations/"
+    chown -R ${productionUser} "${productionDocRoot}/core/database/factories/GeneratedModels"
+    chown -R ${productionUser} "${productionDocRoot}/core/app/Models/GeneratedModels/"
+    chown -R ${productionUser} "${productionDocRoot}/core/app/Http/Controllers/GeneratedControllers/"
+    chown -R ${productionUser} "${productionDocRoot}/core/app/Http/Requests/GeneratedRequests/"
+    chown -R ${productionUser} "${productionDocRoot}/core/database/factories/GeneratedModels"
+    chown -R ${productionUser} "${productionDocRoot}/core/routes"
 fi
 
 
-if [ $environment == 'production' ]; then
+if [ $server == 'production' ]; then
     url="e28-api.yourdomain.com"
 else
     url="e28-api.loc"
@@ -126,8 +152,8 @@ dump "Expected Virtual Host:"
 echo "
 <VirtualHost *:80>
     ServerName $url
-    DocumentRoot $(pwd)/public/
-    <Directory $(pwd)/public/>
+    DocumentRoot $publicDir
+    <Directory $publicDir>
         AllowOverride All
         Options -Indexes
         Require all granted
@@ -140,4 +166,5 @@ echo "
 # Build API
 #
 dump "Build API"
-php artisan e28-api:setup
+
+$phpExecutable artisan e28-api:setup
