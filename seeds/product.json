@@ -8,10 +8,7 @@
             "available": 0,
             "weight": 1,
             "perishable": true,
-            "categories": [
-                "produce",
-                "fruits"
-            ]
+            "categories": "produce, fruits"
         },
         {
             "name": "Nestle Toll House Cookie Dough",
@@ -21,23 +18,17 @@
             "available": 325,
             "weight": 2.25,
             "perishable": true,
-            "categories": [
-                "snacks",
-                "baking"
-            ]
+            "categories": "snacks, baking"
         },
         {
             "name": "Gotham Greens Gourmet Lettuce Medley",
-            "sku": "gotham-greens-lettuce-medley",            
+            "sku": "gotham-greens-lettuce-medley",
             "description": "This lovely blend features Gotham Greens' Tropicana green leaf, Red Sail red leaf, Oak leaf, Lollo Rossa and tender Butterhead lettuces. Perfect for a colorful salad that's (almost) grown right in your own backyard!",
             "price": 3.49,
             "available": 10,
             "weight": 0.30,
             "perishable": true,
-            "categories": [
-                "produce",
-                "vegetables"
-            ]
+            "categories": "produce, vegetables"
         },
         {
             "name": "Gold Medal All Purpose Flour",
@@ -47,9 +38,7 @@
             "available": 299,
             "weight": 2,
             "perishable": false,
-            "categories": [
-                "baking"
-            ]
+            "categories": "baking"
         },
         {
             "name": "Honey Nut Cheerios",
@@ -59,9 +48,7 @@
             "available": 400,
             "weight": 0.68,
             "perishable": false,
-            "categories": [
-                "breakfast"
-            ]
+            "categories": "breakfast"
         },
         {
             "name": "Eggo Nutri-Grain Whole Wheat Waffles",
@@ -71,10 +58,7 @@
             "available": 236,
             "weight": 0.25,
             "perishable": true,
-            "categories": [
-                "breakfast",
-                "frozen"
-            ]
+            "categories": "breakfast, frozen"
         },
         {
             "name": "Amy's Cheese Pizza",
@@ -84,10 +68,7 @@
             "available": 125,
             "weight": 0.81,
             "perishable": true,
-            "categories": [
-                "frozen",
-                "snacks"
-            ]
+            "categories": "frozen, snacks"
         },
         {
             "name": "Birds Eye Steamfresh Fresh Frozen Vegetable Mix",
@@ -97,10 +78,7 @@
             "available": 99,
             "weight": 0.68,
             "perishable": true,
-            "categories": [
-                "frozen",
-                "vegetables"
-            ]
+            "categories": "frozen, vegetables"
         },
         {
             "name": "Bare Coconut Chips",
@@ -110,9 +88,7 @@
             "available": 3,
             "weight": 0.21,
             "perishable": false,
-            "categories": [
-                "snacks"
-            ]
+            "categories": "snacks"
         },
         {
             "name": "Snapple Peach Tea",
@@ -122,9 +98,7 @@
             "available": 4,
             "weight": 12,
             "perishable": false,
-            "categories": [
-                "beverages"
-            ]
+            "categories": "beverages"
         }
     ]
 }

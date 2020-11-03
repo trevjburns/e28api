@@ -51,6 +51,10 @@
             "validators": [
                 "required"
             ]
+        },
+        "categories": {
+            "type": "string",
+            "validators": []
         }
     },
     "favorite": {
