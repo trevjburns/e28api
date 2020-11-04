@@ -8,7 +8,7 @@
             "available": 0,
             "weight": 1,
             "perishable": true,
-            "categories": "produce, fruits"
+            "categories": "produce,fruits"
         },
         {
             "name": "Nestle Toll House Cookie Dough",
@@ -18,7 +18,7 @@
             "available": 325,
             "weight": 2.25,
             "perishable": true,
-            "categories": "snacks, baking"
+            "categories": "snacks,baking"
         },
         {
             "name": "Gotham Greens Gourmet Lettuce Medley",
@@ -28,7 +28,7 @@
             "available": 10,
             "weight": 0.30,
             "perishable": true,
-            "categories": "produce, vegetables"
+            "categories": "produce,vegetables"
         },
         {
             "name": "Gold Medal All Purpose Flour",
@@ -58,7 +58,7 @@
             "available": 236,
             "weight": 0.25,
             "perishable": true,
-            "categories": "breakfast, frozen"
+            "categories": "breakfast,frozen"
         },
         {
             "name": "Amy's Cheese Pizza",
@@ -68,7 +68,7 @@
             "available": 125,
             "weight": 0.81,
             "perishable": true,
-            "categories": "frozen, snacks"
+            "categories": "frozen,snacks"
         },
         {
             "name": "Birds Eye Steamfresh Fresh Frozen Vegetable Mix",
@@ -78,7 +78,7 @@
             "available": 99,
             "weight": 0.68,
             "perishable": true,
-            "categories": "frozen, vegetables"
+            "categories": "frozen,vegetables"
         },
         {
             "name": "Bare Coconut Chips",
