@@ -1,4 +1,4 @@
-ver=1.0.1
+ver=1.0.2
 
 # To set permissions for the API we need to know what user 
 # the server is running Apache under.
@@ -27,7 +27,7 @@ dump () {
 dump "Detecting system"
 
 # Confirm we're running this script from within the e28-api directory
-if [[ ! $(pwd) =~ "e28-api" ]]
+if [[ ! $(pwd) =~ "e28-api" || $(pwd) =~ "core" ]]
 then
    echo "This script must be run from within the e28-api directory."
    echo "Current directory: $(pwd)"
