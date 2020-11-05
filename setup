@@ -1,4 +1,4 @@
-ver=1.0.0
+ver=1.0.1
 
 # To set permissions for the API we need to know what user 
 # the server is running Apache under.
@@ -26,10 +26,15 @@ dump () {
 #
 dump "Detecting system"
 
-# Location of e28-api; retrieved by getting the path of this script (setup) that is running
-apiDir="$(dirname "${BASH_SOURCE[0]}")" # Get the directory name
-apiDir="$(realpath "${apiDir}")/" # Resolve its full path if need be
+# Confirm we're running this script from within the e28-api directory
+if [[ ! $(pwd) =~ "e28-api" ]]
+then
+   echo "This script must be run from within the e28-api directory."
+   echo "Current directory: $(pwd)"
+   exit;
+fi
 
+apiDir=$(pwd)/
 coreDir=$apiDir"core/"
 publicDir=$coreDir"public/"
 

@@ -2,3 +2,4 @@
 .vscode
 
 core/
+*.code-workspace
