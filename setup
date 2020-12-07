@@ -1,4 +1,4 @@
-ver=1.0.3
+ver=1.0.4
 
 # To set permissions for the API we need to know what user 
 # the server is running Apache under.
@@ -100,7 +100,9 @@ cd core
 
 # Update e28-api-core if it already exists (`app` directory present)
 if [ -d "app" ]; then
-   git pull
+    # Toggle filemode tracking to `false` in case it was initially cloned without this setting
+    git config --replace-all core.filemode false 
+    git pull
 # Clone e28-api-core if it does not yet exist
 else
     git clone --config core.filemode=false git@github.com:susanBuck/e28-api-core.git .
