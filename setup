@@ -1,10 +1,30 @@
-version=2021-02-02-16-20-01
+version=2021-03-08-14-46-14
+
+
 
 #
-# Main
-# 
+# main
+#
 main() {
+    getLatestSetup
 
+    # If invoked as `bash setup update`, do update and exit
+    if [[ $1 == 'update' ]]; then
+        update
+        exit;
+    else 
+        # Do a version check and prompt for update if necessary
+        checkVersion
+
+        setup
+    fi
+}
+
+
+#
+# setup
+# 
+setup() {
     # Confirm we’re running this script from within the e28-api directory
     if [[ ! $(pwd) =~ "e28-api" || $(pwd) =~ "core" ]]; then
         echo "This script must be run from within the e28-api directory."
@@ -77,12 +97,8 @@ main() {
     echo "Core directory: $coreDir"
     echo "Public directory: $publicDir"
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
-
-
-
-    #
+    
     # Update core
-    #
     dump "Updating e28-api-core"
 
     # Make core directory if it doesn't exist
@@ -104,11 +120,7 @@ main() {
         git clone --config core.filemode=false git@github.com:susanBuck/e28-api-core.git .
     fi
 
-
-
-    #
     # Packages
-    #
     if [ $server == 'production' ]; then
 
         # If we have sqlite3, we can assume server prep has already been completed - skip
@@ -132,24 +144,19 @@ main() {
     fi
 
 
-
-    #
     # Database
-    #
     dump "Setting up database"
     touch database/database.sqlite
     echo "Created /core/database/database.sqlite"
 
     # Do initial migration (so sessions and other fundamental tables exist, allowing artisan scripts to run w/o error)
-    $phpExecutable artisan migrate --force --quiet
+    $phpExecutable artisan migrate --force
 
-    #
     # Laravel initial setup
-    #
-    if [ ! -f ".env" ]; then
+    if [[ ! -f ".env" ]]; then
         dump "Laravel initial setup"
 
-        if [ $server == 'production' ]; then
+        if [[ $server == "production" ]]; then
             echo "Production: Setting $PRODUCTION_APACHE_USER as owner of directories that Apache needs write access to"
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}database"
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}storage"
@@ -161,7 +168,7 @@ main() {
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}app/Http/Requests/GeneratedRequests/"
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}database/factories/GeneratedModels"
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}routes"
-        elif [ $system != 'windows' ]; then
+        elif [[ $system != "windows" ]]; then
             # File mode changes aren't necessary on Windows because XAMPP is running with the necessary
             # permissions to write to the following directories. 
             echo "Local: Setting write permissions on directories that Apache needs write access to"
@@ -193,6 +200,71 @@ main() {
     $phpExecutable artisan e28-api:setup
 }
 
+
+
+#
+# Get contents of the `setup` script currently on s3
+#
+getLatestSetup() {
+    setup_source="https://heswebdev.s3.amazonaws.com/scripts/setup"
+
+    # If curl is available, use that to download script
+    if [[ -x "$(command -v curl)" ]]; then
+        setup_from_source=$(curl -s $setup_source)
+    # If wget is available, use that to download script
+    elif [[ -x "$(command -v wget)" ]]; then
+        setup_from_source=$(wget -qO- $setup_source)
+    else 
+        setup_from_source=''
+    fi
+
+    # Read the first line of the script file to get the latest version #
+    setup_from_source_array=(${setup_from_source[@]})
+    latest_version="${setup_from_source_array[0]}"
+
+    # Check the first line includes the string `version`
+    # If it does not, it means we were unable to successfully grab the latest version
+    # and we should not prompt for an update
+    if [[ "$latest_version" == *"version"* ]]; then
+        can_update=true;
+    fi
+
+    # Remove "version=" from the line, leaving just the version #
+    latest_version=${latest_version/version=/} 
+}
+
+
+#
+# Compares the version of this script and the latest `setup` script on s3
+#
+checkVersion() {
+    if [[ "$version" != $latest_version ]]; then
+        echo ""
+        echo "============= UPDATE NEEDED ==============="
+        echo "This setup script is currently at version $version"
+        echo "A newer version ($latest_version) is available."
+        echo "Run 'bash setup update' to update"
+        echo "==========================================="
+        exit;
+   fi
+}
+
+
+#
+# Replace current setup script with setup script from s3
+#
+update() {
+    if [[ ! -z "$setup_from_source" && $can_update ]]; then
+        echo "$setup_from_source" > setup
+        echo "Update complete ✓ "
+        exit;
+    else 
+        echo "Update failed. Please create a post in the forum or email susanbuck@fas.harvard.edu for assistance troubleshooting this."
+    fi
+}
+
+
+
 #
 # Output
 #
@@ -201,7 +273,9 @@ dump () {
     echo "===> $1"
 }
 
+
+
 #
-# Run
+# main
 #
-main
+main $1
