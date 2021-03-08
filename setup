@@ -1,4 +1,4 @@
-version=2021-03-08-14-46-14
+version=2021-03-08-14-53-07
 
 
 
@@ -26,7 +26,7 @@ main() {
 # 
 setup() {
     # Confirm we’re running this script from within the e28-api directory
-    if [[ ! $(pwd) =~ "e28-api" || $(pwd) =~ "core" ]]; then
+    if [[ ! $(pwd) =~ "e28api" || $(pwd) =~ "core" ]]; then
         echo "This script must be run from within the e28-api directory."
         echo "Current directory: $(pwd)"
         exit;
@@ -87,7 +87,7 @@ setup() {
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "Welcome to the e28-api setup script"
     echo "Version: $version"
-    echo "Operating system: $operating_system"
+    echo "System: $operating_system"
     echo "Server: $server"
     if [ $server == 'production' ]; then
         echo "Apache user: $PRODUCTION_APACHE_USER"
@@ -168,7 +168,7 @@ setup() {
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}app/Http/Requests/GeneratedRequests/"
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}database/factories/GeneratedModels"
             chown -R ${PRODUCTION_APACHE_USER} "${coreDir}routes"
-        elif [[ $system != "windows" ]]; then
+        elif [[ $operating_system != "windows" ]]; then
             # File mode changes aren't necessary on Windows because XAMPP is running with the necessary
             # permissions to write to the following directories. 
             echo "Local: Setting write permissions on directories that Apache needs write access to"
