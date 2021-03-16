@@ -1,5 +1,6 @@
 {
-    "product": {
+    "permission_level": 0,
+    "fields": {
         "name": {
             "type": "string",
             "validators": [
@@ -55,22 +56,6 @@
         "categories": {
             "type": "string",
             "validators": []
-        }
-    },
-    "favorite": {
-        "product_id": {
-            "type": "integer",
-            "validators": [
-                "required",
-                "numeric"
-            ]
-        },
-        "user_id": {
-            "type": "integer",
-            "validators": [
-                "required",
-                "numeric"
-            ]
         }
     }
 }

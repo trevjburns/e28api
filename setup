@@ -1,4 +1,4 @@
-version=2021-03-08-14-53-07
+version=2021-03-15-11-04-37
 
 
 
@@ -25,9 +25,9 @@ main() {
 # setup
 # 
 setup() {
-    # Confirm we’re running this script from within the e28-api directory
+    # Confirm we’re running this script from within the e28api directory
     if [[ ! $(pwd) =~ "e28api" || $(pwd) =~ "core" ]]; then
-        echo "This script must be run from within the e28-api directory."
+        echo "This script must be run from within the e28api directory."
         echo "Current directory: $(pwd)"
         exit;
     fi
@@ -85,7 +85,7 @@ setup() {
     # Welcome message
     echo ""
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo "Welcome to the e28-api setup script"
+    echo "Welcome to the e28api setup script"
     echo "Version: $version"
     echo "System: $operating_system"
     echo "Server: $server"
@@ -99,7 +99,7 @@ setup() {
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
     
     # Update core
-    dump "Updating e28-api-core"
+    dump "Updating e28api-core"
 
     # Make core directory if it doesn't exist
     mkdir -p core
@@ -112,12 +112,12 @@ setup() {
         echo "FATAL ERROR: Unable to establish an SSH connection with Github. Possible cause: SSH keys not set up correctly."
         exit;
     fi
-    # Update e28-api-core if it already exists (`app` directory present)
+    # Update e28api-core if it already exists (`app` directory present)
     if [ -d "app" ]; then
         git pull
-    # Clone e28-api-core if it does not yet exist
+    # Clone e28api-core if it does not yet exist
     else
-        git clone --config core.filemode=false git@github.com:susanBuck/e28-api-core.git .
+        git clone --config core.filemode=false git@github.com:susanBuck/e28api-core.git .
     fi
 
     # Packages
@@ -197,7 +197,7 @@ setup() {
     #
     dump "Build API"
 
-    $phpExecutable artisan e28-api:setup
+    $phpExecutable artisan e28api:setup
 }
 
 
