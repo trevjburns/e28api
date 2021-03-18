@@ -1,4 +1,4 @@
-version=2021-03-16-17-13-13
+version=2021-03-18-13-55-42
 
 
 
@@ -81,12 +81,12 @@ setup() {
         fi
     fi
 
-
     # Welcome message
     echo ""
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "Welcome to the e28api setup script"
-    echo "Version: $version"
+    echo "Your version: $version"
+    echo "Latest version: $latest_version"
     echo "System: $operating_system"
     echo "Server: $server"
     if [ $server == 'production' ]; then
@@ -238,7 +238,7 @@ getLatestSetup() {
 # Compares the version of this script and the latest `setup` script on s3
 #
 checkVersion() {
-    if [[ "$version" != $latest_version ]]; then
+    if [[ ! -z "$setup_from_source" && $can_update && "$version" != $latest_version ]]; then
         echo ""
         echo "============= UPDATE NEEDED ==============="
         echo "This setup script is currently at version $version"
@@ -246,7 +246,7 @@ checkVersion() {
         echo "Run 'bash setup update' to update"
         echo "==========================================="
         exit;
-   fi
+    fi
 }
 
 
