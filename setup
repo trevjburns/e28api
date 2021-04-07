@@ -1,4 +1,4 @@
-version=2021-04-07-14-11-32
+version=2021-04-07-16-33-54
 
 
 
@@ -256,7 +256,8 @@ checkVersion() {
 update() {
     if [[ ! -z "$setup_from_source" && $can_update ]]; then
         echo "$setup_from_source" > setup
-        echo "Update complete ✓ "
+        echo "Update complete ✓"
+        echo "Run 'bash setup' to build your API."
         exit;
     else 
         echo "Update failed. Please create a post in the forum or email susanbuck@fas.harvard.edu for assistance troubleshooting this."
