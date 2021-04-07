@@ -1,4 +1,4 @@
-version=2021-04-05-12-11-47
+version=2021-04-06-20-39-39
 
 
 
@@ -132,7 +132,7 @@ setup() {
             echo "Adding modules"
             sudo add-apt-repository ppa:ondrej/php
             sudo apt-get update
-            sudo apt-get install php7.4-mbstring zip unzip php7.4-xml php-sqlite3
+            sudo apt-get install php7.4-mbstring zip unzip php7.4-xml php7.4-sqlite php-sqlite3
 
             echo "Enabling modrewrite"
             # Laravel requires Apache's `mod_rewrite` for URL routing, so we enable it:
