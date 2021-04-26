@@ -1,0 +1,44 @@
+{
+    "permission_level": 0,
+    "fields": {
+        "question": {
+            "type": "string",
+            "validators": [
+                "required",
+                "min:3"
+            ]
+        },
+        "answer": {
+            "type": "text",
+            "validators": [
+                "required",
+                "min:3"
+            ]
+        },
+        "point_value": {
+            "type": "integer",
+            "validators": [
+                "required",
+                "numeric"
+            ]
+        },
+        "hint": {
+            "type": "text",
+            "validators": [
+                "required",
+                "min:3"
+            ]
+        },
+        "completed": {
+            "type": "boolean",
+            "validators": [
+                "required",
+                "boolean"
+            ]
+        },
+        "decks": {
+            "type": "string",
+            "validators": []
+        }
+    }
+}

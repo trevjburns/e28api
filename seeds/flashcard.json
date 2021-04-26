@@ -1,0 +1,84 @@
+{
+    "seeds": [
+        {
+            "question": "What is the capital of Russia?",
+            "answer": "Moscow",
+            "point_value": 10,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "What is the largest continent?",
+            "answer": "Asia",
+            "point_value": 5,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "What is the capital of Nigeria?",
+            "answer": "Abuja",
+            "point_value": 20,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "What is the capital of Turkey?",
+            "answer": "Istanbul",
+            "point_value": 15,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "What is the largest country in the world (by land area)?",
+            "answer": "Russia",
+            "point_value": 10,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "What is the least populated U.S. state?",
+            "answer": "Wyoming",
+            "point_value": 15,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "What is the capital of Oregon?",
+            "answer": "Salem",
+            "point_value": 10,
+            "hint": "",
+            "completed": false,
+            "decks": "geography"
+        },
+        {
+            "question": "How many seconds are in one minute?",
+            "answer": "60",
+            "point_value": 5,
+            "hint": "",
+            "completed": false,
+            "decks": "math"
+        },
+        {
+            "question": "What is the first prime number?",
+            "answer": "2",
+            "point_value": 10,
+            "hint": "",
+            "completed": false,
+            "decks": "math"
+        },
+        {
+            "question": "What is the symbol for division (÷) officially called?",
+            "answer": "Obelus",
+            "point_value": 20,
+            "hint": "",
+            "completed": false,
+            "decks": "math"
+        }
+    ]
+}

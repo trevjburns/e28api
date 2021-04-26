@@ -1,0 +1,14 @@
+{
+    "permission_level": 0,
+    "fields": {
+        "name": {
+            "type": "string",
+            "validators": [
+                "required",
+                "min:3",
+                "alpha_num",
+                "unique"
+            ]
+        }
+    }
+}

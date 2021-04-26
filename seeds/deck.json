@@ -1,0 +1,10 @@
+{
+    "seeds": [
+        {
+            "name": "geography"
+        },
+        {
+            "name": "math"
+        }
+    ]
+}
